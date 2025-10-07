@@ -36,3 +36,22 @@ sudo apt install ros-humble-realsense2-camera ros-humble-rtabmap-ros \
 ```bash
 pip install "numpy<2.0" open3d --break-system-packages
 ```
+## 📷 Launching the RealSense D455
+
+Start the RealSense D455 with RGB-D and IMU data:
+
+```bash
+ros2 launch realsense2_camera rs_launch.py \
+  color_width:=640 color_height:=480 \
+  depth_width:=640 depth_height:=480 depth_fps:=30 depth_max:=2.0 \
+  enable_gyro:=true enable_accel:=true unite_imu_method:=1 \
+  pointcloud.enable:=true align_depth.enable:=true
+```
+
+This enables:
+
+- RGB and depth streams (aligned)
+
+- IMU data (accelerometer + gyroscope)
+
+- 3D point cloud publishing

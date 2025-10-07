@@ -38,20 +38,30 @@ pip install "numpy<2.0" open3d --break-system-packages
 ```
 ## 📷 Launching the RealSense D455
 
-Start the RealSense D455 with RGB-D and IMU data:
+Start the Intel RealSense D455 camera with RGB-D and IMU data streams:
 
-```bash
 ros2 launch realsense2_camera rs_launch.py \
   color_width:=640 color_height:=480 \
   depth_width:=640 depth_height:=480 depth_fps:=30 depth_max:=2.0 \
   enable_gyro:=true enable_accel:=true unite_imu_method:=1 \
   pointcloud.enable:=true align_depth.enable:=true
-```
 
-This enables:
+| Parameter                              | Description                                                                                                           |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `color_width:=640 color_height:=480`   | Sets the resolution of the RGB (color) stream to **640×480** pixels.                                                  |
+| `depth_width:=640 depth_height:=480`   | Sets the resolution of the depth stream to **640×480** — must match color resolution for alignment.                   |
+| `depth_fps:=30`                        | Frame rate of the depth stream (**30 FPS**) for real-time operation.                                                  |
+| `depth_max:=2.0`                       | Maximum valid depth distance (in meters). Points farther than **2 m** are ignored.                                    |
+| `enable_gyro:=true enable_accel:=true` | Enables the **gyroscope** and **accelerometer** sensors in the D455.                                                  |
+| `unite_imu_method:=1`                  | Fuses accelerometer and gyroscope data into a single IMU topic `/imu/data`. Method `1` uses **linear interpolation**. |
+| `pointcloud.enable:=true`              | Publishes a **3D point cloud** generated from the depth image.                                                        |
+| `align_depth.enable:=true`             | Aligns the depth image to the color frame — ensures both have the same pixel correspondence.                          |
 
-- RGB and depth streams (aligned)
 
-- IMU data (accelerometer + gyroscope)
+This launch configuration provides:
 
-- 3D point cloud publishing
+Aligned RGB-D streams (ready for SLAM or mapping)
+
+IMU fusion (accelerometer + gyroscope)
+
+3D point cloud publishing for visualization or mapping (e.g. RTAB-Map, RViz)

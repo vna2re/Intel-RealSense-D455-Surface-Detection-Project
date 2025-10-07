@@ -1,6 +1,7 @@
 # Intel-RealSense-D455-Surface-Detection-Project
-![Point Cloud Visualization](oblako_tochek.gif)
-![Point Cloud Visualization](floor_detect.gif)
+- ![Point Cloud Visualization](oblako_tochek.gif)
+
+- ![Point Cloud Visualization](floor_detect.gif)
 ## 🧭 Overview
 
 The system performs the following steps:

@@ -26,8 +26,6 @@ The system performs the following steps:
 
 ### 1. Install ROS 2 and dependencies
 
-Follow the [official ROS 2 Humble installation guide](https://docs.ros.org/en/humble/Installation.html).
-
 Install required ROS 2 packages:
 
 ```bash

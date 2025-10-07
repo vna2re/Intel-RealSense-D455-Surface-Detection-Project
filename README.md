@@ -1,5 +1,5 @@
 # Intel-RealSense-D455-Surface-Detection-Project
-- ![Point Cloud Visualization](oblako_tochek.gif)
+![Point Cloud Visualization](oblako_tochek.gif)
 
 ![Point Cloud Visualization](floor_detect.gif)
 ## 🧭 Overview

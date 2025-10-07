@@ -71,7 +71,7 @@ This launch configuration provides:
 ---
 ## 🧮 IMU Fusion
 
-Run Madgwick filter to fuse raw IMU data and produce orientation:
+Run the Madgwick filter to fuse raw IMU data (gyroscope + accelerometer) from the RealSense D455 and output orientation in quaternion form:
 
 ```bash
 ros2 run imu_filter_madgwick imu_filter_madgwick_node \
@@ -83,4 +83,22 @@ ros2 run imu_filter_madgwick imu_filter_madgwick_node \
   -p fixed_frame:=camera_link
 ```
 
-This node publishes /imu/data which will later be used by RTAB-Map for visual-inertial SLAM.
+| Parameter                             | Description                                                                                                               |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `-r imu/data_raw:=/camera/camera/imu` | Remaps the raw IMU topic from the RealSense camera to the input expected by the Madgwick filter.                          |
+| `-p use_mag:=false`                   | Disables the magnetometer (the D455 doesn’t provide magnetometer data). The filter will rely only on gyro and accel data. |
+| `-p publish_tf:=true`                 | Publishes a **TF transform** representing the orientation of the IMU in the ROS TF tree.                                  |
+| `-p frame_id:=camera_link`            | Sets the IMU frame name to `camera_link` — this ensures consistency with RTAB-Map’s expected reference frame.             |
+| `-p fixed_frame:=camera_link`         | Defines a fixed reference frame for orientation output (used when publishing TF).                                         |
+
+Result:
+
+This node:
+
+- Subscribes to /camera/camera/imu (raw IMU data)
+
+- Publishes filtered orientation as /imu/data
+
+- Adds an orientation TF between camera_link and odom
+
+- Provides fused inertial data that improves pose estimation in RTAB-Map for visual-inertial SLAM

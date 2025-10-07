@@ -15,7 +15,7 @@ This project implements the following pipeline:
 
 ## ⚙️ System Requirements
 
-- Ubuntu 22.04 (recommended)
+- Ubuntu 22.04
 - ROS 2 Humble
 - Intel RealSense D455
 - Python 3.10+

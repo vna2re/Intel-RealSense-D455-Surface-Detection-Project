@@ -40,11 +40,13 @@ pip install "numpy<2.0" open3d --break-system-packages
 
 Start the Intel RealSense D455 camera with RGB-D and IMU data streams:
 
+```bash
 ros2 launch realsense2_camera rs_launch.py \
   color_width:=640 color_height:=480 \
   depth_width:=640 depth_height:=480 depth_fps:=30 depth_max:=2.0 \
   enable_gyro:=true enable_accel:=true unite_imu_method:=1 \
   pointcloud.enable:=true align_depth.enable:=true
+```
 
 | Parameter                              | Description                                                                                                           |
 | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -60,8 +62,8 @@ ros2 launch realsense2_camera rs_launch.py \
 
 This launch configuration provides:
 
-Aligned RGB-D streams (ready for SLAM or mapping)
+- Aligned RGB-D streams (ready for SLAM or mapping)
 
-IMU fusion (accelerometer + gyroscope)
+- IMU fusion (accelerometer + gyroscope)
 
-3D point cloud publishing for visualization or mapping (e.g. RTAB-Map, RViz)
+- 3D point cloud publishing for visualization or mapping (e.g. RTAB-Map, RViz)

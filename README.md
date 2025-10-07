@@ -202,3 +202,22 @@ You can change RTAB-Map and rgbd_odometry parameters at runtime with `ros2 param
 4. `ros2 node list` — is `/rtabmap/rtabmap` and `/rtabmap/rgbd_odometry` running?
 5. `ros2 param get /rtabmap/rtabmap frame_id` — does it equal your camera `frame_id`?
 6. Visual check: open `rtabmap-viz` and monitor topics/messages and the "Console" tab for warnings.
+
+## Processing the Map with Open3D (Planar Surface Segmentation)
+
+After you have exported your scanned room as a .ply file from RTAB-Map, you can use Open3D to process the point cloud and detect planar surfaces such as the floor. Below is an explanation of the workflow and example code.
+
+```python
+# Your Python code here
+import open3d as o3d
+import numpy as np
+
+cloud = o3d.io.read_point_cloud("map.ply")
+cloud = cloud.voxel_down_sample(voxel_size=0.02)
+plane_model, inliers = cloud.segment_plane(distance_threshold=0.02, ransac_n=3, num_iterations=1000)
+plane_cloud = cloud.select_by_index(inliers)
+rest_cloud = cloud.select_by_index(inliers, invert=True)
+plane_cloud.paint_uniform_color([0, 1, 0])
+rest_cloud.paint_uniform_color([1, 0, 0])
+o3d.visualization.draw_geometries([plane_cloud, rest_cloud])
+```

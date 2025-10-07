@@ -1,37 +1,35 @@
 # Intel-RealSense-D455-Surface-Detection-Project
 
----
-
 ## 🧭 Overview
 
-The system performs:
+The system performs the following steps:
 
-1. **3D Mapping** — Capturing RGB-D data using Intel RealSense D455.
-2. **SLAM Processing** — Building a consistent map with RTAB-Map using RGB, depth, and IMU data.
-3. **Map Export** — Saving the generated 3D map as a `.db` and `.ply` file.
-4. **Floor Detection** — Identifying the ground plane from the reconstructed point cloud using RANSAC-based segmentation.
-
----
-
-## ⚙️ System Configuration
-
-- **Operating System:** Ubuntu 22.04 LTS  
-- **ROS 2 Distribution:** Humble Hawksbill  
-- **Camera:** Intel RealSense D455  
-- **Libraries:** RTAB-Map, Open3D, NumPy  
+1. **Capture RGB-D and IMU data** from the Intel RealSense D455 camera.  
+2. **Fuse visual and inertial data** using the Madgwick filter for robust odometry.  
+3. **Generate a 3D map** in **RTAB-Map** and export it as a `.db` or `.ply` file.  
+4. **Process the saved map** in Python with **Open3D** to detect and visualize the floor surface.
 
 ---
 
-## 📸 1. Launching the RealSense D455 Camera
+## ⚙️ System Requirements
 
-Start the RGB-D stream, depth alignment, and IMU sensors:
+- Ubuntu 22.04 (recommended)
+- ROS 2 Humble
+- Intel RealSense D455
+- Python 3.10+
+- Open3D ≥ 0.18
+- RTAB-Map ≥ 0.20
+
+---
+
+## 🧩 Installation
+
+### 1. Install ROS 2 and dependencies
+
+Follow the [official ROS 2 Humble installation guide](https://docs.ros.org/en/humble/Installation.html).
+
+Install required ROS 2 packages:
 
 ```bash
-ros2 launch realsense2_camera rs_launch.py \
-  color_width:=640 color_height:=480 \
-  depth_width:=640 depth_height:=480 \
-  depth_fps:=30 depth_max:=2.0 \
-  enable_gyro:=true enable_accel:=true \
-  unite_imu_method:=1 \
-  pointcloud.enable:=true \
-  align_depth.enable:=true
+sudo apt install ros-humble-realsense2-camera ros-humble-rtabmap-ros \
+                 ros-humble-imu-filter-madgwick python3-pip

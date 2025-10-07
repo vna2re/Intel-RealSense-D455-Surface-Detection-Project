@@ -1,13 +1,13 @@
 # Intel-RealSense-D455-Surface-Detection-Project
 ![Point Cloud Visualization](oblako_tochek.gif)
 
-![Point Cloud Visualization](floor_detect.gif)
+![Floor Segmentation](floor_detect.gif)
 ## 🧭 Overview
 
-The system performs the following steps:
+This project implements the following pipeline:
 
 1. **Capture RGB-D and IMU data** from the Intel RealSense D455 camera.  
-2. **Fuse visual and inertial data** using the Madgwick filter for robust odometry.  
+2. **Fuse IMU and visual data** using the Madgwick filter for robust odometry.  
 3. **Generate a 3D map** in **RTAB-Map** and export it as a `.db` or `.ply` file.  
 4. **Process the saved map** in Python with **Open3D** to detect and visualize the floor surface.
 
@@ -36,7 +36,8 @@ sudo apt install ros-humble-realsense2-camera ros-humble-rtabmap-ros \
 ```
 ### 2. Install Python dependencies
 ```bash
-pip install "numpy<2.0" open3d --break-system-packages
+# Install Open3D (requires numpy<2.0 due to compatibility)
+pip install "numpy<2.0" open3d
 ```
 ---
 ## 📷 Launching the RealSense D455
@@ -56,11 +57,11 @@ ros2 launch realsense2_camera rs_launch.py \
 | `color_width:=640 color_height:=480`   | Sets the resolution of the RGB (color) stream to **640×480** pixels.                                                  |
 | `depth_width:=640 depth_height:=480`   | Sets the resolution of the depth stream to **640×480** — must match color resolution for alignment.                   |
 | `depth_fps:=30`                        | Frame rate of the depth stream (**30 FPS**) for real-time operation.                                                  |
-| `depth_max:=2.0`                       | Maximum valid depth distance (in meters). Points farther than **2 m** are ignored.                                    |
+| `depth_max:=2.0`                       | Maximum valid depth distance (in meters). Points beyond 2 m are excluded.                                    |
 | `enable_gyro:=true enable_accel:=true` | Enables the **gyroscope** and **accelerometer** sensors in the D455.                                                  |
 | `unite_imu_method:=1`                  | Fuses accelerometer and gyroscope data into a single IMU topic `/imu/data`. Method `1` uses **linear interpolation**. |
 | `pointcloud.enable:=true`              | Publishes a **3D point cloud** generated from the depth image.                                                        |
-| `align_depth.enable:=true`             | Aligns the depth image to the color frame — ensures both have the same pixel correspondence.                          |
+| `align_depth.enable:=true`             | Aligns depth to color frame for correct RGB-D mapping.                          |
 
 
 This launch configuration provides:
@@ -88,7 +89,7 @@ ros2 run imu_filter_madgwick imu_filter_madgwick_node \
 | Parameter                             | Description                                                                                                               |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `-r imu/data_raw:=/camera/camera/imu` | Remaps the raw IMU topic from the RealSense camera to the input expected by the Madgwick filter.                          |
-| `-p use_mag:=false`                   | Disables the magnetometer (Magnetometer is not used, only gyro and accelerometer data are fused). The filter will rely only on gyro and accel data. |
+| `-p use_mag:=false`                   | Disables the magnetometer (Magnetometer is not used, only gyro and accelerometer data are fused). Filter uses only gyro and accelerometer data. |
 | `-p publish_tf:=true`                 | Publishes a **TF transform** representing the orientation of the IMU in the ROS TF tree.                                  |
 | `-p frame_id:=camera_link`            | Sets the IMU frame name to `camera_link` — this ensures consistency with RTAB-Map’s expected reference frame.             |
 | `-p fixed_frame:=camera_link`         | Defines a fixed reference frame for orientation output (used when publishing TF).                                         |
@@ -101,7 +102,7 @@ This node:
 
 - Publishes filtered orientation as /imu/data
 
-- Adds an orientation TF between camera_link and odom
+- Publishes orientation TF between camera_link and odom
 
 - Provides fused inertial data that improves pose estimation in RTAB-Map for visual-inertial SLAM
 ---

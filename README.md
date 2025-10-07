@@ -31,3 +31,12 @@ Install required ROS 2 packages:
 ```bash
 sudo apt install ros-humble-realsense2-camera ros-humble-rtabmap-ros \
                  ros-humble-imu-filter-madgwick python3-pip
+```
+### 2. Install Python dependencies
+pip install "numpy<2.0" open3d --break-system-packages
+
+
+🧠 Tip:
+If --break-system-packages is not supported, use:
+
+pip install "numpy<2.0" open3d

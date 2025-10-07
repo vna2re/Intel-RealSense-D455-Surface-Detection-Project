@@ -88,7 +88,7 @@ ros2 run imu_filter_madgwick imu_filter_madgwick_node \
 | Parameter                             | Description                                                                                                               |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `-r imu/data_raw:=/camera/camera/imu` | Remaps the raw IMU topic from the RealSense camera to the input expected by the Madgwick filter.                          |
-| `-p use_mag:=false`                   | Disables the magnetometer (the D455 doesn’t provide magnetometer data). The filter will rely only on gyro and accel data. |
+| `-p use_mag:=false`                   | Disables the magnetometer (Magnetometer is not used, only gyro and accelerometer data are fused). The filter will rely only on gyro and accel data. |
 | `-p publish_tf:=true`                 | Publishes a **TF transform** representing the orientation of the IMU in the ROS TF tree.                                  |
 | `-p frame_id:=camera_link`            | Sets the IMU frame name to `camera_link` — this ensures consistency with RTAB-Map’s expected reference frame.             |
 | `-p fixed_frame:=camera_link`         | Defines a fixed reference frame for orientation output (used when publishing TF).                                         |

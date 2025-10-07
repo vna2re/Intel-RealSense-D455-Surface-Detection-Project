@@ -143,14 +143,34 @@ After you have exported your scanned room as a .ply file from RTAB-Map, you can 
 import open3d as o3d
 import numpy as np
 
-cloud = o3d.io.read_point_cloud("map.ply")
-cloud = cloud.voxel_down_sample(voxel_size=0.02)
-plane_model, inliers = cloud.segment_plane(distance_threshold=0.02, ransac_n=3, num_iterations=1000)
-plane_cloud = cloud.select_by_index(inliers)
-rest_cloud = cloud.select_by_index(inliers, invert=True)
-plane_cloud.paint_uniform_color([0, 1, 0])
-rest_cloud.paint_uniform_color([1, 0, 0])
-o3d.visualization.draw_geometries([plane_cloud, rest_cloud])
+# Загружаем PLY с нижними точками
+pcd = o3d.io.read_point_cloud("/home/vova/map_floor.ply")
+
+# Настройки RANSAC для поиска плоскости (пола)
+distance_threshold = 0.02  # максимально допустимое отклонение от плоскости (м)
+ransac_n = 3               # количество точек для одной гипотезы плоскости
+num_iterations = 1000      # число итераций
+
+# Поиск плоскости (пол)
+plane_model, inliers = pcd.segment_plane(distance_threshold=distance_threshold,
+                                         ransac_n=ransac_n,
+                                         num_iterations=num_iterations)
+
+[a, b, c, d] = plane_model
+print(f"Модель плоскости: {a:.3f}x + {b:.3f}y + {c:.3f}z + {d:.3f} = 0")
+
+# Отделяем точки пола
+floor_cloud = pcd.select_by_index(inliers)
+# Остальные точки (немного торчащие объекты)
+other_cloud = pcd.select_by_index(inliers, invert=True)
+
+# Окрашиваем для визуализации
+floor_cloud.paint_uniform_color([0.0, 1.0, 0.0])  # зеленый = пол
+other_cloud.paint_uniform_color([1.0, 0.0, 0.0])  # красный = все остальное
+
+# Визуализация
+o3d.visualization.draw_geometries([floor_cloud, other_cloud])
+
 ```
 ### Explanation:
 

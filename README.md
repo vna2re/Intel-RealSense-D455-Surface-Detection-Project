@@ -36,6 +36,7 @@ sudo apt install ros-humble-realsense2-camera ros-humble-rtabmap-ros \
 ```bash
 pip install "numpy<2.0" open3d --break-system-packages
 ```
+---
 ## 📷 Launching the RealSense D455
 
 Start the Intel RealSense D455 camera with RGB-D and IMU data streams:
@@ -67,3 +68,19 @@ This launch configuration provides:
 - IMU fusion (accelerometer + gyroscope)
 
 - 3D point cloud publishing for visualization or mapping (e.g. RTAB-Map, RViz)
+---
+## 🧮 IMU Fusion
+
+Run Madgwick filter to fuse raw IMU data and produce orientation:
+
+```bash
+ros2 run imu_filter_madgwick imu_filter_madgwick_node \
+  --ros-args \
+  -r imu/data_raw:=/camera/camera/imu \
+  -p use_mag:=false \
+  -p publish_tf:=true \
+  -p frame_id:=camera_link \
+  -p fixed_frame:=camera_link
+```
+
+This node publishes /imu/data which will later be used by RTAB-Map for visual-inertial SLAM.
